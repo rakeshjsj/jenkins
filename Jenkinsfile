@@ -14,7 +14,7 @@ pipeline {
     }
     
     stages {
-        stage{
+        stage('STAGE1'){
             agent { label 'slave2' }
 
 
@@ -33,7 +33,7 @@ pipeline {
                      '''
             }
         }
-        stage('STAGE1') {
+        stage('STAGE2') {
             
             agent { label 'slave1' }
 
