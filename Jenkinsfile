@@ -1,13 +1,23 @@
 pipeline{
+   agent any
 
 stages{
-    stage1{
-      sh '''
-         ls -lrt
+    stage("Stage 1") {
+     steps{
+        sh '''
+           ls -lrt
 
-      '''
+         '''
+     }
+        
+      
     }
-    stage2{
-          sleep 10    }
-}
+    stage("Stage 2"){
+          steps{
+            sh '''
+               ls -lrt
+
+             '''
+          }
+    }
 }
