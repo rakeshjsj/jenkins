@@ -6,6 +6,12 @@ pipeline {
         booleanParam(name: 'SKIP_TEST', description: 'Want to skip test runs to direct deploy')
         choice(name: 'BRANCH', choices: ['master','stagging','prod'], description: '')
     }
+
+    environment{
+          user_name = 'rakesh'
+          password = 'kjsjjsjsjs'
+
+    }
     
     stages {
         stage('STAGE1') {
@@ -16,6 +22,8 @@ pipeline {
                echo "NAME: ${params.NAME}"
                echo "SKIP_TEST: ${params.SKIP_TEST}"
                echo "BRANCH TO DEPLOY: ${params.BRANCH}"
+               echo "user_name: ${user_name}"
+               echo "password: ${password}"
 
                sh '''
                     echo "NAME: ${NAME}"
