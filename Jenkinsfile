@@ -1,24 +1,29 @@
-pipeline{
-   agent any
+pipeline {
+    agent none
 
-stages{
-    stage("Stage 1") {
-     steps{
-        sh '''
-           ls -lrt
+    parameters {
+        string(name: 'NAME', defaultValue: '', description: 'Please tell me you name?')
+        booleanParam(name: 'SKIP_TEST', description: 'Want to skip test runs to direct deploy')
+        choice(name: 'BRANCH', choices: ['master','stagging','prod'], description: '')
+    }
+    
+    stages {
+        stage('STAGE1') {
+            
+            agent { label 'slave1' }
 
-         '''
-     }
+            steps {
+               echo "NAME: ${params.NAME}"
+               echo "SKIP_TEST: ${params.SKIP_TEST}"
+               echo "BRANCH TO DEPLOY: ${params.BRANCH}"
+
+               sh '''
+                    echo "NAME: ${NAME}"
+                    echo "SKIP_TEST: ${SKIP_TEST}"
+                    echo "BRANCH TO DEPLOY: ${BRANCH}"
+               '''
+            }
+        }
         
-      
     }
-    stage("Stage 2"){
-          steps{
-            sh '''
-               ls -lrt
-
-             '''
-          }
-    }
-}
 }
