@@ -19,7 +19,7 @@ pipeline {
 
 
             steps {
-                catchError(buildResult: 'SUCCESS',stageResult: 'FAILURE') 
+                catchError(buildResult: 'SUCCESS',stageResult: 'FAILURE') {
                     echo "NAME: ${params.NAME}"
                     echo "SKIP_TEST: ${params.SKIP_TEST}"
                     echo "BRANCH TO DEPLOY: ${params.BRANCH}"
@@ -31,6 +31,7 @@ pipeline {
              
                     
                      '''
+                }
             }
         }
         stage('STAGE2') {
