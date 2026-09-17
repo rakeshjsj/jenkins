@@ -1,62 +1,71 @@
 pipeline {
-    agent none
+    agent any
 
     parameters {
-        string(name: 'NAME', defaultValue: '', description: 'Please tell me you name?')
-        booleanParam(name: 'SKIP_TEST', description: 'Want to skip test runs to direct deploy')
-        choice(name: 'BRANCH', choices: ['master','stagging','prod'], description: '')
-    }
-
-    environment{
-          user_name = 'rakesh'
-          password = 'kjsjjsjsjs'
-
+        booleanParam(name: 'DEPLOY', description: 'Want to deploy to Production')
     }
     
+    environment {
+        CURRENT_ENV = 'prod'
+    }
+
     stages {
-        stage('STAGE1'){
-            agent { label 'slave2' }
-
-
+        stage('CEHCKOUT_REPOA') {
             steps {
-                catchError(buildResult: 'SUCCESS',stageResult: 'FAILURE') {
-                    echo "NAME: ${params.NAME}"
-                    echo "SKIP_TEST: ${params.SKIP_TEST}"
-                    echo "BRANCH TO DEPLOY: ${params.BRANCH}"
-                    echo "user_name: ${env.user_name}"
-                    echo "password: ${password}"
+                checkout ([ $class: 'GitSCM',
+                            branches: [[name: '*/main']], 
+                            extensions: [], 
+                            userRemoteConfigs: [[
+                                credentialsId: 'jaintpharsha', 
+                                url: 'https://github.com/jaintpharsha/mern_3tire.git'
+                            ]]
+                        ])
+               
+                sh '''
+                    echo GIT_BRANCH: $GIT_BRANCH
+                    echo BRANCH_NAME: $BRANCH_NAME
+                '''
+            }
+        }
 
-                    sh '''
-                        exit 1
-             
-                    
-                     '''
+        stage('STAGE1 When branch main') {
+            when {
+                expression {
+                    return env.GIT_BRANCH == 'origin/main'
                 }
             }
-        }
-        stage('STAGE2') {
-            
-            agent { label 'slave1' }
-
             steps {
-               echo "NAME: ${params.NAME}"
-               echo "SKIP_TEST: ${params.SKIP_TEST}"
-               echo "BRANCH TO DEPLOY: ${params.BRANCH}"
-               echo "user_name: ${env.user_name}"
-               echo "password: ${password}"
-
-               sh '''
-                    echo "NAME: ${NAME}"
-                    echo "SKIP_TEST: ${SKIP_TEST}"
-                    echo "BRANCH TO DEPLOY: ${BRANCH}"
-                    echo "user_name: ${user_name}"
-                    echo "password: ${password}"
-               '''
+                echo "This is stage1 running"
+                sh ''' 
+                    pwd
+                    ls -lrt
+                    sleep 5
+                '''
             }
         }
 
-               
+        stage('when environment') {
+            when {
+                environment name: 'CURRENT_ENV', value: 'prod'
+            }
+            steps {
+                echo "This is FINAL running"
+                sh '''
+                    pwd
+                    ls -lrt
+                    sleep 5
+                '''
+            }
+        }
+
+        stage('when parameter') {
+            when {
+                expression { params.DEPLOY == true }
+            }
+            steps {
+                echo "This is FINAL running"
+                sh 'sleep 5'
+            }
+        }
     }
-        
-        
 }
