@@ -14,6 +14,36 @@ pipeline {
     }
     
     stages {
+        stage{
+            agent { label 'slave2' }
+
+
+            steps {
+                catchError(buildResult: 'SUCCESS',stageResult: 'FAILURE') {
+                    echo "NAME: ${params.NAME}"
+                    echo "SKIP_TEST: ${params.SKIP_TEST}"
+                    echo "BRANCH TO DEPLOY: ${params.BRANCH}"
+                    echo "user_name: ${env.user_name}"
+                    echo "password: ${password}"
+
+                    sh '''
+                        exit 1
+                }
+               echo "NAME: ${params.NAME}"
+               echo "SKIP_TEST: ${params.SKIP_TEST}"
+               echo "BRANCH TO DEPLOY: ${params.BRANCH}"
+               echo "user_name: ${env.user_name}"
+               echo "password: ${password}"
+
+               sh '''
+                    echo "NAME: ${NAME}"
+                    echo "SKIP_TEST: ${SKIP_TEST}"
+                    echo "BRANCH TO DEPLOY: ${BRANCH}"
+                    echo "user_name: ${user_name}"
+                    echo "password: ${password}"
+               '''
+            }
+        }
         stage('STAGE1') {
             
             agent { label 'slave1' }
@@ -22,13 +52,25 @@ pipeline {
                echo "NAME: ${params.NAME}"
                echo "SKIP_TEST: ${params.SKIP_TEST}"
                echo "BRANCH TO DEPLOY: ${params.BRANCH}"
-               echo "user_name: ${user_name}"
+               echo "user_name: ${env.user_name}"
                echo "password: ${password}"
 
                sh '''
                     echo "NAME: ${NAME}"
                     echo "SKIP_TEST: ${SKIP_TEST}"
                     echo "BRANCH TO DEPLOY: ${BRANCH}"
+                    echo "user_name: ${user_name}"
+                    echo "password: ${password}"
+               '''
+            }
+        }
+
+               sh '''
+                    echo "NAME: ${NAME}"
+                    echo "SKIP_TEST: ${SKIP_TEST}"
+                    echo "BRANCH TO DEPLOY: ${BRANCH}"
+                    echo "user_name: ${user_name}"
+                    echo "password: ${password}"
                '''
             }
         }
