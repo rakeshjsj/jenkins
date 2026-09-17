@@ -10,14 +10,14 @@ pipeline {
     }
 
     stages {
-        stage('CEHCKOUT_REPOA') {
+        stage('CHECKOUT_REPO') {
             steps {
                 checkout ([ $class: 'GitSCM',
                             branches: [[name: '*/main']], 
                             extensions: [], 
                             userRemoteConfigs: [[
-                                credentialsId: 'jaintpharsha', 
-                                url: 'https://github.com/jaintpharsha/mern_3tire.git'
+                                credentialsId: 'rakeshjsj', 
+                                url: 'https://github.com/rakeshjsj/jenkins.git'
                             ]]
                         ])
                
